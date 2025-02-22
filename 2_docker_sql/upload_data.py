@@ -1,14 +1,13 @@
 
 import argparse
-
 import os
 
 import psycopg2
 
 import pandas as pd
-from time import time
-
 import sqlalchemy
+
+from time import time
 
 def main(params):
 
@@ -21,16 +20,15 @@ def main(params):
     dbname = params.dbname
     table = params.table
     source_url = params.source_url
-    csv_name = 'output.csv'
+    source_file = 'source_file.csv'
         #"../yellow_tripdata_Jan2021/yellow_tripdata_2021-01.csv"
 
-    os.system(f'wget {source_url} -O {csv_name}')
-
+    # source_url will be assigned in shell before the 'docker run ...' command is run
+    os.system(f'wget {source_url} -O {source_file}')
 
     """ Connect to DB """
     engine = sqlalchemy.create_engine(f'postgresql://{user}:{password}@{host}:{port}/{dbname}')
     engine.connect()
-
 
     """ Load Data into DB
 
@@ -49,9 +47,9 @@ def main(params):
     * our iteration is starting at 100000 because 'dataset_iter' was called earlier in testing -- RESOLVED
     """
 
-    dataset_iter = pd.read_csv(csv_name, iterator=True, chunksize=100000)
+    dataset_iter = pd.read_csv(source_file, iterator=True, chunksize=100000)
 
-    pd.read_csv(csv_name, header=0, nrows=0
+    pd.read_csv(source_file, header=0, nrows=0
                             ).to_sql(name=table, con=engine, if_exists='replace')
 
     while True:
