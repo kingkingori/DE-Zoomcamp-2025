@@ -1,5 +1,9 @@
-FROM python:3.9
+FROM python:3.9.1
 
-RUN pip install pandas
+RUN apt-get install wget
+RUN pip install pandas sqlalchemy psycopg2
 
-ENTRYPOINT [ "bash" ]
+WORKDIR /app
+COPY upload_data.py upload_data.py
+
+ENTRYPOINT [ "python", "upload_data.py"]
