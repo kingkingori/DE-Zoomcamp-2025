@@ -7,6 +7,8 @@ import psycopg2
 import pandas as pd
 import sqlalchemy
 
+from sqlalchemy.types import BIGINT, TIMESTAMP, FLOAT, TEXT
+
 from time import time
 
 def main(params):
@@ -19,12 +21,12 @@ def main(params):
     port = params.port
     dbname = params.dbname
     table = params.table
-    source_url = params.source_url
-    source_file = 'source_file.csv'
-        #"../yellow_tripdata_Jan2021/yellow_tripdata_2021-01.csv"
+    # source_url = params.source_url
+    # source_file = 'source_file.csv'
+    source_file = "../yellow_tripdata_Jan2021/yellow_tripdata_2021-01.csv"
 
     # source_url will be assigned in shell before the 'docker run ...' command is run
-    os.system(f'wget {source_url} -O {source_file}')
+    # os.system(f'wget {source_url} -O {source_file}')
 
     """ Connect to DB """
     engine = sqlalchemy.create_engine(f'postgresql://{user}:{password}@{host}:{port}/{dbname}')
@@ -49,7 +51,31 @@ def main(params):
 
     dataset_iter = pd.read_csv(source_file, iterator=True, chunksize=100000)
 
-    pd.read_csv(source_file, header=0, nrows=0).to_sql(name=table, con=engine, if_exists='replace')
+    # include data types in DDL to conform numeric columns especially, to aggregation operations
+
+    pd.read_csv(source_file, header=0, nrows=0).to_sql(
+        name=table, con=engine, if_exists='replace',
+        dtype={
+            "VendorID": BIGINT, 
+            "tpep_pickup_datetime": TIMESTAMP, 
+            "tpep_dropoff_datetime": TIMESTAMP, 
+            "passenger_count": BIGINT, 
+            "trip_distance": FLOAT(53), 
+            "RatecodeID": BIGINT, 
+            "store_and_fwd_flag": TEXT, 
+            "PULocationID": BIGINT, 
+            "DOLocationID": BIGINT, 
+            "payment_type": BIGINT, 
+            "fare_amount": FLOAT(53), 
+            "extra": FLOAT(53), 
+            "mta_tax": FLOAT(53), 
+            "tip_amount": FLOAT(53), 
+            "tolls_amount": FLOAT(53), 
+            "improvement_surcharge": FLOAT(53), 
+            "total_amount": FLOAT(53), 
+            "congestion_surcharge": FLOAT(53)
+        }
+    )
 
     while True:
         try:
@@ -92,7 +118,7 @@ if __name__ == '__main__':
     parser.add_argument('--port', help="number of the access port")
     parser.add_argument('--dbname', help="name of the destination db")
     parser.add_argument('--table', help="name of the destination table")
-    parser.add_argument('--source_url', help="url of the source file")
+    # parser.add_argument('--source_url', help="url of the source file")
 
     args = parser.parse_args()
 
