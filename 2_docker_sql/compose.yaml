@@ -1,5 +1,5 @@
 services:
-  pgdb:
+  pgdatabase:
     image: postgres:16
     environment:
       - POSTGRES_USER=zoomcamp
@@ -9,8 +9,8 @@ services:
       - "./ny_taxi_postgres_data:/var/lib/postgresql/data:rw"
     ports:
       - "5432:5432"
-  pgadm:
-    image: dpage/pdadmin4
+  pgadmin:
+    image: dpage/pgadmin4
     environment:
       - PGADMIN_DEFAULT_EMAIL=zoomcamp@zoomcamp.com
       - PGADMIN_DEFAULT_PASSWORD=zoomcamp
