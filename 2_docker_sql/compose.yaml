@@ -1,0 +1,20 @@
+services:
+  pgdb:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=zoomcamp
+      - POSTGRES_PASSWORD=zoomcamp
+      - POSTGRES_DB=ny_taxi
+    volumes:
+      - "./ny_taxi_postgres_data:/var/lib/postgresql/data:rw"
+    ports:
+      - "5432:5432"
+  pgadm:
+    image: dpage/pdadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=zoomcamp@zoomcamp.com
+      - PGADMIN_DEFAULT_PASSWORD=zoomcamp
+      - POSTGRES_DB=ny_taxi
+    ports:
+      - "8080:80"
+  
