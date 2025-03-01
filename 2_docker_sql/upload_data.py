@@ -49,8 +49,7 @@ def main(params):
 
     dataset_iter = pd.read_csv(source_file, iterator=True, chunksize=100000)
 
-    pd.read_csv(source_file, header=0, nrows=0
-                            ).to_sql(name=table, con=engine, if_exists='replace')
+    pd.read_csv(source_file, header=0, nrows=0).to_sql(name=table, con=engine, if_exists='replace')
 
     while True:
         try:
