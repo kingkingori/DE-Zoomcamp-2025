@@ -1,0 +1,4 @@
+airflow db migrate
+airflow users create --username zoomcamp --firstname Zoom --lastname Camp --role Admin --email zoomcamp@zoomcamp.com
+airflow webserver --port 8081
+airflow scheduler
