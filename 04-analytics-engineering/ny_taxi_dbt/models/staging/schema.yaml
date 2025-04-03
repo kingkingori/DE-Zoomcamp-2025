@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: staging
+    database: kk-zoomcamp-2025
+    schema: ny_taxi
+
+    tables:
+      - name: yellow_trips
+      - name: green_trips
